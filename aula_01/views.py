@@ -1,5 +1,12 @@
 from utils import load_data, load_template
 import urllib
+import json
+
+
+def write_json(data, filename='data/notes.json'): 
+    with open(filename,'w') as f: 
+        json.dump(data, f) 
+
 
 def index(request):
     note_template = load_template('components/note.html')
@@ -23,16 +30,26 @@ def index(request):
             unquote = urllib.parse.unquote_plus(chave_valor).split('=')
             params[unquote[0]] = unquote[1]
 
-        print('\nPARAMS: ')
+        print('\n----------PARAMS -------------')
         print(params)
+        print('\n-------------------------------')
+
+
+        with open('data/notes.json') as json_file:
+            data = json.load(json_file)
+        
+        data.append(params)
+        write_json(data)
+
 
         notes_li = [
             note_template.format(title=dados['titulo'], details=dados['detalhes'])
-            for dados in list(params)
+            for dados in load_data('notes.json')
         ]
         notes = '\n'.join(notes_li)
 
         return load_template('index.html').format(notes=notes).encode()
+
 
     else:
         # Cria uma lista de <li>'s para cada anotação
