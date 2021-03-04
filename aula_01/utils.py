@@ -55,3 +55,22 @@ def load_template(template_file):
 
 
 print(load_data('notes.json'))
+
+
+"""
+Implemente a função build_response no arquivo utils.py. Ele deve receber os seguintes argumentos: 
+build_response(body='', code=200, reason='OK', headers='') (talvez você queira ler isso: 
+https://docs.python.org/3/tutorial/controlflow.html#default-argument-values).
+"""
+
+def build_response(body='', code=200, reason='OK', headers=''):
+    response = 'HTTP/1.1 ' + (' '.join([str(code), reason]))
+    
+    if headers == '':
+        response += '\n\n' + body
+    else:
+        response += '\n' + headers + '\n\n' + body
+
+    print('Response: ' + response)
+    
+    return response.encode()

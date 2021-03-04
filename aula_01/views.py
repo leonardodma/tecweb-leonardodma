@@ -1,11 +1,12 @@
-from utils import load_data, load_template
+  
+from utils import load_data, load_template, build_response
 import urllib
 import json
 
 
 def write_json(data, filename='data/notes.json'): 
     with open(filename,'w') as f: 
-        json.dump(data, f) 
+        json.dump(data, f, ensure_ascii=False, indent=4) 
 
 
 def index(request):
@@ -41,14 +42,7 @@ def index(request):
         data.append(params)
         write_json(data)
 
-
-        notes_li = [
-            note_template.format(title=dados['titulo'], details=dados['detalhes'])
-            for dados in load_data('notes.json')
-        ]
-        notes = '\n'.join(notes_li)
-
-        return load_template('index.html').format(notes=notes).encode()
+        return build_response(code=303, reason='See Other', headers='Location: /')
 
 
     else:
@@ -60,4 +54,4 @@ def index(request):
         ]
         notes = '\n'.join(notes_li)
 
-        return load_template('index.html').format(notes=notes).encode()
+        return build_response() + load_template('index.html').format(notes=notes).encode()
